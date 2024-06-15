@@ -1,0 +1,45 @@
+class Solution {
+    private static final int[][] MOVES = {
+        {0, 8},       // Moves from 0
+        {1, 2, 4},    // Moves from 1
+        {1, 2, 3, 5}, // Moves from 2
+        {2, 3, 6},    // Moves from 3
+        {1, 4, 5, 7}, // Moves from 4
+        {2, 4, 5, 6, 8}, // Moves from 5
+        {3, 5, 6, 9}, // Moves from 6
+        {4, 7, 8},    // Moves from 7
+        {0, 5, 7, 8, 9}, // Moves from 8
+        {6, 8, 9}     // Moves from 9
+    };
+
+    public long getCount(int n) {
+        if (n == 0) {
+            return 0;
+        }
+
+        long[][] dp = new long[n + 1][10];
+
+        // Base case: sequences of length 1
+        for (int i = 0; i <= 9; i++) {
+            dp[1][i] = 1;
+        }
+
+        // Fill the DP table
+        for (int len = 2; len <= n; len++) {
+            for (int digit = 0; digit <= 9; digit++) {
+                dp[len][digit] = 0;
+                for (int move : MOVES[digit]) {
+                    dp[len][digit] += dp[len - 1][move];
+                }
+            }
+        }
+
+        // Sum up all sequences of length n ending at any digit
+        long result = 0;
+        for (int i = 0; i <= 9; i++) {
+            result += dp[n][i];
+        }
+
+        return result;
+    }
+}
